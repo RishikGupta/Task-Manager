@@ -1,159 +1,202 @@
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #2c2c8a, #8a56c2);
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    height: 100vh;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-color: #fa8bff;
+  background-image: linear-gradient(45deg, #fa8bff 0%, #2bd2ff 52%, #2bff88 40%);
 }
 
 header {
-    background-color: #14a697;
-    padding: 20px;
-    text-align: center;
-    color: #fff;
-}
-
-.card {
-    background-color: #fff;
-    width: 500px;
-    margin: 20px auto;
-    padding: 3rem 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    color: #333;
+  background-color: #14a697;
+  padding: 20px;
+  text-align: center;
+  color: #fff;
 }
 
 h1 {
-    color: #000;
-    font-size: 28px;
-    margin: 0 0 1.2em 0;
+  color: #fff;
+}
+
+.card {
+  background-color: #fff;
+  width: 500px;
+  margin: 20px auto;
+  padding: 3rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  color: #333;
+}
+
+.confirm_delete h3 {
+  color: #000;
+  font-size: 28px;
+  margin: 20px 0 1.2em 0;
 }
 
 #task_form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-items: stretch;
 }
 
 h3 {
-    margin-top: 0;
+  margin-top: 0;
+}
+
+.toolbar {
+  backdrop-filter: contrast(200%);
+}
+
+.toolbar,
+#task_container {
+  margin: 25px;
+  padding: 30px;
 }
 
 .task-input {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 0px;
+  border: none;
+  border-radius: 5px;
 }
 
 #task_input {
-    flex: 1;
-    padding: 15px 12px;
-    margin-right: 10px;
-    border: none;
-    background-color: #f2f2f2;
-    color: #333;
-    border-radius: 5px 0 0 5px;
-    transition: background-color 0.3s ease;
+  flex: 1;
+  padding: 15px 12px;
+  margin-right: 10px;
+  border: none;
+  background-color: #f2f2f2;
+  color: #333;
+  border-radius: 5px 0 0 5px;
+  transition: background-color 0.3s ease;
 }
 
 #task_input::placeholder {
-    color: #777;
+  color: #777;
 }
 
 #task_input:focus {
-    outline: none;
-    background-color: #e6e6e6;
+  outline: none;
+  background-color: #e6e6e6;
 }
-
 
 button[type="submit"] {
-    background-color: #ff4e00;
-    background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
-    color: #333;
-    padding: 15px 7px;
-    border: none;
-    border-radius: 0 7px 7px 0;
-    margin-left: -15px;
-    cursor: pointer;
-    width: 5rem;
+  background-color: #ff4e00;
+  background-image: linear-gradient(
+    117deg,
+    rgba(123, 216, 96, 1) 39.2%,
+    rgba(255, 255, 255, 1) 156.2%
+  );
+  color: #333;
+  padding: 15px 7px;
+  border: none;
+  border-radius: 0 7px 7px 0;
+  margin-left: -15px;
+  cursor: pointer;
+  width: 5rem;
 }
 
-
 button:hover {
-    background-color: #a4508b;
-background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
-color: #fff;
+  background-color: #a4508b;
+  background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+  color: #fff;
+}
+
+.search_container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+label {
+  margin: 5px 0;
+  /* color: #ececec; */
 }
 
 #task_container {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 20px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .task_card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-    background-color: #ffffff;
-    box-shadow: 5px 5px 20px rgba(203, 205, 211, 0.1);
-    padding: 16px;
-    top: 1rem;
-    width: 250px;
-    min-height: 175px;
-    margin: 15px;
-    border-radius: 4px;
-    transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  background-color: #ffffff;
+  box-shadow: 5px 5px 20px rgba(203, 205, 211, 0.1);
+  padding: 16px;
+  top: 1rem;
+  width: 250px;
+  min-height: 175px;
+  margin: 15px;
+  border-radius: 4px;
+  transition: box-shadow 0.3s ease;
 }
 
 .task_card.completed {
-    background: linear-gradient(to bottom right, #B0DB7D 40%, #99DBB4 100%);
+  background-image: radial-gradient(
+    circle farthest-corner at 10% 20%,
+    rgba(128, 248, 174, 1) 0%,
+    rgba(223, 244, 148, 1) 90%
+  );
 }
 
 .task_card.pending {
-    background: linear-gradient(to bottom left, #EF8D9C 40%, #FFC39E 100%);
+  background-image: radial-gradient(
+    circle farthest-corner at 10% 20%,
+    rgba(255, 200, 124, 1) 0%,
+    rgba(252, 251, 121, 1) 90%
+  );
 }
 
 .task_card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.task_card textarea {
-    margin: 0;
-    font-size: 1.2rem;
-    color: white;
-    background-color: #333;
-    overflow:hidden;
-    resize: none;
+.task_text {
+  height: 150px;
+  overflow-y: scroll;
+  background: cornsilk;
+  border-radius: 5px;
+}
+
+.edit_text {
+  height: 200px !important;
 }
 
 .task_card .status {
-    margin-top: 10px;
-    font-size: 14px;
-    font-size: 1.1em;
-    font-weight: 100;
-    color: #5e5e5e;
-    letter-spacing: 1px;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 100;
+  color: #5e5e5e;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .task_card .creation {
-    margin-top: 10px;
-    font-size: 14px;
-    font-size: 0.8em;
-    font-weight: 100;
-    color: black;
-    letter-spacing: 1px;
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 100;
+  color: black;
+  letter-spacing: 1px;
 }
 
 .task_card .update {
-    margin-top: 10px;
-    font-size: 14px;
-    font-size: 0.8em;
-    font-weight: 100;
-    color: blue;
-    letter-spacing: 1px;
+  margin-top: 10px;
+  font-size: 14px;
+  font-size: 0.8em;
+  font-weight: 100;
+  color: blue;
+  letter-spacing: 1px;
 }
 
 /* =========================== */
@@ -161,43 +204,43 @@ color: #fff;
 /* =========================== */
 
 .button-box {
-    background: #FCFCFC;
-    border-radius: 20px;
-    outline: 0;
-    border: none;
-    box-shadow: 2px 2px 10px rgba(119, 119, 119, 0.5);
-    transition: all 0.5s ease-in-out;
-    margin-top: 1rem;
-    padding: 12px 10px;
+  background: #fcfcfc;
+  border-radius: 20px;
+  outline: 0;
+  border: none;
+  box-shadow: 2px 2px 10px rgba(119, 119, 119, 0.5);
+  transition: all 0.5s ease-in-out;
+  margin-top: 1rem;
+  padding: 12px 10px;
 }
 
 .button-box:hover {
-    background: #efefef;
-    transform: scale(1.05);
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;;
+  background: #efefef;
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .green {
-    color: green;
+  color: green;
 }
 
 .red {
-    color: red;
+  color: red;
 }
 
 .blue {
-    color: blue;
+  color: blue;
 }
 
 .button-box span {
-    font-size: 0.9em;
-    font-weight: 100;
-    letter-spacing: 3px;
-    padding-top: 5px;
-    /* color: #FCFCFC; */
-    padding-bottom: 5px;
-    text-transform: uppercase;
+  font-size: 0.9em;
+  font-weight: 100;
+  letter-spacing: 3px;
+  padding-top: 5px;
+  /* color: #FCFCFC; */
+  padding-bottom: 5px;
+  text-transform: uppercase;
 }
 
 /* =========================== */
@@ -205,92 +248,131 @@ color: #fff;
 /* =========================== */
 
 .overlay {
-    position: relative;
+  position: relative;
 }
 
 .overlay::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.overlay::backdrop {
+  background-color: salmon;
 }
 
 @keyframes fade {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.8);
-    }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
 
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .confirm_delete {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    min-width: 280px;
-    max-width: 500px;
-    height: auto;
-    background: #E2E2E2;
-    border-radius: 10px;
-    padding: 0;
-    margin: 0;
-    border-top: 1px solid white;
-    animation: fade 0.5s ease 1 forwards;
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  min-width: 280px;
+  max-width: 500px;
+  height: auto;
+  background: #e2e2e2;
+  border-radius: 10px;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid white;
+  animation: fade 0.5s ease 1 forwards;
 }
 
 .confirm_delete h1 {
-    text-align: center;
-    font-size: 1.2rem;
-    margin: 1.5rem 1rem 0.5rem;
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 1.5rem 1rem 0.5rem;
 }
 
 .confirm_delete p {
-    text-align: center;
-    font-size: 1rem;
-    margin: 0 2rem 4.5rem;
+  text-align: center;
+  font-size: 1rem;
+  margin: 0 2rem 4.5rem;
 }
 
 .confirm_delete button {
-    background: transparent;
-    border: none;
-    color: #1678E5;
-    height: 3rem;
-    font-size: 1rem;
-    width: 50%;
-    position: absolute;
-    bottom: 0;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #1678e5;
+  height: 3rem;
+  font-size: 1rem;
+  width: 50%;
+  position: absolute;
+  bottom: 0;
+  cursor: pointer;
 }
 
 .confirm_delete button:nth-of-type(1) {
-    border-top: 1px solid #B4B4B4;
-    border-right: 1px solid #B4B4B4;
-    left: 0;
-    border-radius: 0 0 0 10px;
+  border-top: 1px solid #b4b4b4;
+  border-right: 1px solid #b4b4b4;
+  left: 0;
+  border-radius: 0 0 0 10px;
 }
 
 .confirm_delete button:nth-of-type(2) {
-    border-top: 1px solid #B4B4B4;
-    right: 0;
-    border-radius: 0 0 10px 0;
+  border-top: 1px solid #b4b4b4;
+  right: 0;
+  border-radius: 0 0 10px 0;
 }
 
 .confirm_delete button:focus,
 .confirm_delete button:hover {
-    font-weight: bold;
-    background: #EFEFEF;
+  font-weight: bold;
+  background: #efefef;
 }
 
 .confirm_delete button:active {
-    background: #D6D6D6;
+  background: #d6d6d6;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal_content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.modal_buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal_buttons button {
+  margin-left: 10px;
+}
+
+#edit_modal_textarea {
+  width: 100%;
+  height: 150px;
 }
