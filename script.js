@@ -1,183 +1,240 @@
 // Retrieve tasks from local storage or initialize an empty array
-let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let filteredTasks = [...tasks];
 
-const taskManagerContainer = document.querySelector(".task_manager");
-const confirmDeleteEl = document.querySelector(".confirm_delete");
-const confirmDeleteBtn = confirmDeleteEl.querySelector(".confirmed_delete");
-const cancelDeleteBtn = confirmDeleteEl.querySelector(".cancel_delete");
-let indexToBeDeleted = null
+const $taskManagerContainer = $(".task_manager");
+const $confirmDeleteEl = $(".confirm_delete");
+const $confirmDeleteBtn = $confirmDeleteEl.find(".confirmed_delete");
+const $cancelDeleteBtn = $confirmDeleteEl.find(".cancel_delete");
+const $searchInput = $("#search_input");
+const $editModal = $("#edit_modal");
+const $editModalClose = $("#edit_modal_close");
+const $editModalSave = $("#edit_modal_save");
+const $editModalTextarea = $("#edit_modal_textarea");
+let indexToBeDeleted = null;
+let currentEditIndex = null;
 
-
-// Function to return formatted date
-function formatDate() {
-  var myDate = new Date();
+/**
+ * Returns the current date and time formatted as 'YYYY/MM/DD HH:MM:SS'.
+ * @returns {string} The formatted date and time.
+ */
+const formatDate = () => {
+  let myDate = new Date();
   const year = myDate.getFullYear();
   let month = myDate.getMonth() + 1;
   let day = myDate.getDate();
-  const hours = myDate.getHours();
-  const minutes = myDate.getMinutes();
-  const seconds = myDate.getSeconds();
-  if(parseInt(month) < 10) {
-    month = '0' + month;
+  let hours = myDate.getHours();
+  let minutes = myDate.getMinutes();
+  let seconds = myDate.getSeconds();
+
+  if (parseInt(month) < 10) {
+    month = "0" + month;
   }
-  if(parseInt(day) < 10) {
-    day = '0' + day;
+  if (parseInt(day) < 10) {
+    day = "0" + day;
   }
-  const formattedDate = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+  if (parseInt(hours) < 10) {
+    hours = "0" + hours;
+  }
+  if (parseInt(minutes) < 10) {
+    minutes = "0" + minutes;
+  }
+  if (parseInt(seconds) < 10) {
+    seconds = "0" + seconds;
+  }
+
+  const formattedDate =
+    year + "/" + month + "/" + day + " " + hours + ":" + minutes + ":" + seconds;
   return formattedDate;
-}
+};
 
-// Function to save tasks to local storage
-function saveTasks() {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-}
+/**
+ * Saves the tasks array to local storage.
+ */
+const saveTasks = () => {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+};
 
-// function to delete the selected task
-function deleteTask(index) {
+/**
+ * Deletes the task at the specified index.
+ * @param {number} index - The index of the task to delete.
+ */
+const deleteTask = (index) => {
   tasks.splice(index, 1);
   saveTasks();
-  renderTasks();
-}
+  filterTasks();
+};
 
-function autoResize(taskText) {
-   taskText.style.height = 'auto';
-   taskText.style.height = taskText.scrollHeight + 'px';
-}
+/**
+ * Automatically resizes the textarea to fit its content.
+ * @param {HTMLTextAreaElement} taskText - The textarea element to resize.
+ */
+const autoResize = (taskText) => {
+  $(taskText)
+    .css("height", "auto")
+    .css("height", taskText.scrollHeight + "px");
+};
 
-// Function to render tasks
-function renderTasks() {
-  const taskContainer = document.getElementById('task_container');
-  taskContainer.innerHTML = '';
+/**
+ * Renders the tasks in the task container.
+ */
+const renderTasks = () => {
+  const $taskContainer = $("#task_container").empty();
 
-  tasks.forEach((task, index) => {
-    const taskCard = document.createElement('div');
-    taskCard.classList.add('task_card');
-    let classVal = "pending";
-    let textVal = "Pending"
-    if (task.completed) {
-      classVal = "completed";
-      textVal = "Completed";
-    }
+  filteredTasks.forEach((task, index) => {
+    const classVal = task.completed ? "completed" : "pending";
+    const textVal = task.completed ? "Completed" : "Pending";
 
-    console.log(task);
-    taskCard.classList.add(classVal);
+    const $taskCard = $("<div>")
+      .addClass("task_card " + classVal)
+      .append($("<p>").addClass("status").text(textVal))
+      .append($("<div>").addClass("status").text(`Assigned To: ${task.assignedTo}`))
+      .append($("<div>").addClass("task_text").text(task.text))
+      .append($("<p>").addClass("update").text(`Last updated at: ${task.updatedAt}`))
+      .append(createToggleButton(task, index))
+      .append(createEditButton(task, index))
+      .append(createDeleteButton(index))
+      .append($("<p>").addClass("creation").text(`Created at: ${task.createdAt}`));
 
-    const taskText = document.createElement('textarea');
-    taskText.value = task.text;
-    console.log(taskText.value);
-    taskText.disabled = true;
-    
+    $taskContainer.append($taskCard);
+  });
+};
 
-    const taskStatus = document.createElement('p');
-    taskStatus.classList.add('status');
-    taskStatus.innerText = textVal;
+/**
+ * Opens the modal to edit the task at the specified index.
+ * @param {number} index - The index of the task to edit.
+ */
+const openEditModal = (index) => {
+  currentEditIndex = index;
+  const task = tasks[index];
+  $editModalTextarea.val(task.text);
+  autoResize($editModalTextarea[0]);
+  $editModal.show();
+};
 
-    const taskCreation = document.createElement('p');
-    taskCreation.classList.add('creation');
-    taskCreation.innerText = `Created at: ${task.createdAt}`;
-
-    const taskUpdate = document.createElement('p');
-    taskUpdate.classList.add('update');
-    taskUpdate.innerText = `Last updated at: ${task.updatedAt}`;
-
-    const toggleButton = document.createElement('button');
-    toggleButton.classList.add("button-box");
-    const btnContentEl = document.createElement("span");
-    btnContentEl.classList.add("green");
-    btnContentEl.innerText = task.completed ? 'Mark as Pending' : 'Mark as Completed';
-    toggleButton.appendChild(btnContentEl);
-    toggleButton.addEventListener('click', () => {
+/**
+ * Creates a toggle button to mark tasks as completed or pending.
+ * @param {Object} task - The task object.
+ * @param {number} index - The index of the task.
+ * @returns {jQuery} The jQuery object for the toggle button.
+ */
+const createToggleButton = (task, index) => {
+  return $("<button>")
+    .addClass("button-box")
+    .append(
+      $("<span>")
+        .addClass("green")
+        .text(task.completed ? "Mark as Pending" : "Mark as Completed")
+    )
+    .on("click", () => {
       tasks[index].completed = !tasks[index].completed;
       saveTasks();
-      renderTasks();
+      filterTasks();
     });
+};
 
-    const editButton = document.createElement('button');
-    editButton.classList.add("button-box");
-    const editBtnContentEl = document.createElement("span");
-    editBtnContentEl.classList.add("blue");
-    editBtnContentEl.innerText = 'Edit';
-    editButton.appendChild(editBtnContentEl);
-    editButton.addEventListener('click', () => {
-      taskText.disabled = false;
-      taskText.focus();
-      
-      taskText.addEventListener('keydown', (e) => {
-        autoResize(taskText);
-        if(e.code === "Enter"){
-          task.text = e.target.value;
-          task.updatedAt = `${formatDate()}`;
-          saveTasks();
-          renderTasks();
-        }
-      });
+/**
+ * Creates an edit button to enable editing of the task text.
+ * @param {Object} task - The task object.
+ * @param {number} index - The index of the task.
+ * @returns {jQuery} The jQuery object for the edit button.
+ */
+const createEditButton = (task, index) => {
+  return $("<button>")
+    .addClass("button-box")
+    .append($("<span>").addClass("blue").text("Edit"))
+    .on("click", () => openEditModal(index));
+};
+
+/**
+ * Creates a delete button to delete the task.
+ * @param {number} index - The index of the task.
+ * @returns {jQuery} The jQuery object for the delete button.
+ */
+const createDeleteButton = (index) => {
+  return $("<button>")
+    .addClass("button-box")
+    .append($("<span>").addClass("red").text("Delete"))
+    .on("click", () => {
+      indexToBeDeleted = index;
+      $confirmDeleteEl.show();
+      $taskManagerContainer.addClass("overlay");
+      window.scrollTo(0, 0);
+      $(".toolbar").css("display", "none");
     });
+};
 
-    const deleteButton = document.createElement('button');
-    deleteButton.classList.add("button-box");
-    const delBtnContentEl = document.createElement("span");
-    delBtnContentEl.classList.add("red");
-    delBtnContentEl.innerText = 'Delete';
-    deleteButton.appendChild(delBtnContentEl);
-    deleteButton.addEventListener('click', () => {
-      indexToBeDeleted = index
-      confirmDeleteEl.style.display = "block";
-      taskManagerContainer.classList.add("overlay");
-    });
-
-    taskCard.appendChild(taskText);
-    taskCard.appendChild(taskStatus);
-    taskCard.appendChild(taskCreation);
-    taskCard.appendChild(taskUpdate);
-    taskCard.appendChild(toggleButton);
-    taskCard.appendChild(editButton);
-    taskCard.appendChild(deleteButton);
-    taskText.style.height = 'auto';
-
-    taskContainer.appendChild(taskCard);
-    taskText.style.height = 'auto';
-    taskText.style.height = taskText.scrollHeight + 'px';
-    
-  });
-}
-
-// Function to handle form submission
-function handleFormSubmit(event) {
+/**
+ * Handles the form submission to add a new task.
+ * @param {Event} event - The form submission event.
+ */
+const handleFormSubmit = (event) => {
   event.preventDefault();
-  const taskInput = document.getElementById('task_input');
-  const taskText = taskInput.value.trim();
+  const taskText = $("#task_input").val().trim();
+  const user = $("#user_input").val().trim();
 
-  if (taskText !== '') {
-    const newTask = {
+  if (taskText) {
+    tasks.push({
       text: taskText,
       completed: false,
+      assignedTo: user,
       createdAt: new Date().toDateString(),
-      updatedAt: `${formatDate()}`,
-    };
-
-    tasks.push(newTask);
+      updatedAt: formatDate(),
+    });
     saveTasks();
-    taskInput.value = '';
-    renderTasks();
+    $("#task_input").val("");
+    filterTasks();
   }
-}
+};
 
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * Filters tasks based on the search input.
+ */
+const filterTasks = () => {
+  const searchTerm = $searchInput.val().toLowerCase();
+  filteredTasks = tasks.filter((task) => {
+    return (
+      task.text.toLowerCase().includes(searchTerm) ||
+      task.assignedTo.toLowerCase().includes(searchTerm)
+    );
+  });
+  renderTasks();
+};
 
-  // Initial rendering of tasks
+$(document).ready(() => {
   renderTasks();
 
-  // Add event listener to the form submit event
-  document.getElementById('task_form').addEventListener('submit', handleFormSubmit);
+  $("#task_form").on("submit", handleFormSubmit);
+  $searchInput.on("input", filterTasks);
 
-  confirmDeleteBtn.addEventListener("click", () => {
-    confirmDeleteEl.style.display = "none";
-    taskManagerContainer.classList.remove("overlay");
-    deleteTask(indexToBeDeleted);
+  $("#task_input").on("input", function () {
+    autoResize(this);
   });
-  
-  cancelDeleteBtn.addEventListener("click", () => {
-    confirmDeleteEl.style.display = "none";
-    taskManagerContainer.classList.remove("overlay");
+
+  $confirmDeleteBtn.on("click", () => {
+    $confirmDeleteEl.hide();
+    $taskManagerContainer.removeClass("overlay");
+    deleteTask(indexToBeDeleted);
+    $(".toolbar").css("display", "block");
+  });
+
+  $cancelDeleteBtn.on("click", () => {
+    $confirmDeleteEl.hide();
+    $taskManagerContainer.removeClass("overlay");
+    $(".toolbar").css("display", "block");
+  });
+
+  $editModalClose.on("click", () => {
+    $editModal.hide();
+  });
+
+  $editModalSave.on("click", () => {
+    if (currentEditIndex !== null) {
+      tasks[currentEditIndex].text = $editModalTextarea.val();
+      tasks[currentEditIndex].updatedAt = formatDate();
+      saveTasks();
+      filterTasks();
+      $editModal.hide();
+    }
   });
 });
